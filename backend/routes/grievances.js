@@ -6,7 +6,8 @@ const {
     getGrievance,
     getGrievances,
     deleteGrievance,
-    updateGrievance
+    updateGrievance,
+    updateGrievanceStatusAndReply,
 } = require("../controllers/grievanceController");
 
 // Require authentication for all grievance routes
@@ -30,5 +31,7 @@ router.delete('/:id', deleteGrievance);
 
 // UPDATE a Grievance
 router.patch('/:id', updateGrievance);
+
+router.post('/:id/update', updateGrievanceStatusAndReply);
 
 module.exports = router;

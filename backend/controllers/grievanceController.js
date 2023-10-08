@@ -32,35 +32,28 @@ const getGrievance = async (req, res) => {
 
 // POST (create) a new Grievance
 const createGrievance = async (req, res) => {
-    // All requests are passed to req using middleware in the server
-    const { title, description, userType, department, category } = req.body;
+    const { title, description, userType, department, category, status, reply } = req.body;
 
-    let emptyFields = [];
+    // Validate required fields
+    const requiredFields = ['title', 'description', 'userType', 'department', 'category'];
+    const missingFields = requiredFields.filter((field) => !req.body[field]);
 
-    if (!title) {
-        emptyFields.push('title');
-    }
-    if (!description) {
-        emptyFields.push('description');
-    }
-    if (!userType) {
-        emptyFields.push('userType');
-    }
-    if (!department) {
-        emptyFields.push('department');
-    }
-    if (!category) {
-        emptyFields.push('category');
-    }
-    if (emptyFields.length > 0) {
-        return res.status(400).json({ error: `Please fill out ${emptyFields}`, emptyFields });
+    if (missingFields.length > 0) {
+        return res.status(400).json({ error: `Please fill out the following fields: ${missingFields.join(', ')}` });
     }
 
-    // There might be an error, so using try and catch
-    // Add the document to the database
     try {
         const user_id = req.user._id;
-        const grievance = await Grievance.create({ title, description, userType, department, category, user_id });
+        const grievance = await Grievance.create({
+            title,
+            description,
+            userType,
+            department,
+            category,
+            user_id,
+            status, // Add the status property to the new grievance
+            reply, // Add the reply property to the new grievance
+        });
         res.status(200).json(grievance);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -93,16 +86,46 @@ const updateGrievance = async (req, res) => {
         return res.status(404).json({ error: "No such Grievance" });
     }
 
-    const grievance = await Grievance.findOneAndUpdate({ _id: id }, {
-        ...req.body
-    });
+    try {
+        // Find the existing grievance by ID
+        const grievance = await Grievance.findById(id);
 
-    if (!grievance) {
-        // If not found, stop this function using return
+        if (!grievance) {
+            return res.status(404).json({ error: "No such Grievance" });
+        }
+
+        // Update the grievance properties with values from the request body
+        grievance.set(req.body);
+
+        // Save the updated grievance
+        const updatedGrievance = await grievance.save();
+
+        res.status(200).json(updatedGrievance);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
+// POST (update) a Grievance with status and reply
+const updateGrievanceStatusAndReply = async (req, res) => {
+    const { id } = req.params;
+    const { status, reply } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({ error: "No such Grievance" });
     }
 
-    res.status(200).json(grievance);
+    try {
+        const grievance = await Grievance.findByIdAndUpdate(id, { status, reply }, { new: true });
+
+        if (!grievance) {
+            return res.status(404).json({ error: "No such Grievance" });
+        }
+
+        res.status(200).json(grievance);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
 }
 
 module.exports = {
@@ -110,5 +133,6 @@ module.exports = {
     getGrievances,
     createGrievance,
     deleteGrievance,
-    updateGrievance
+    updateGrievance,
+    updateGrievanceStatusAndReply,
 }

@@ -25,6 +25,15 @@ const grievanceSchema = new Schema({
     user_id: {
         type: String,
         required: true
+    },
+    status: {
+        type: String, // You can use an enum here for predefined statuses
+        required: true,
+        default: 'pending' // Default status is 'pending', you can change it to whatever is suitable
+    },
+    reply: {
+        type: String,
+        default: '' // Default reply is an empty string, you can change it to whatever is suitable
     }
 }, { timestamps: true });
 
