@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useGrievancesContext } from "../hooks/useGrievancesContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import GrievanceDetails from "../components/GrievanceDetails";
-import GrievanceForm from "../components/GrievanceForm";
+// import GrievanceForm from "../components/GrievanceForm";
 
 const Home = () => {
   const { grievances, dispatch } = useGrievancesContext();

@@ -4,7 +4,7 @@ const validator = require('validator');
 
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
+const adminSchema = new Schema({
     email: {
         type: String,
         required: true,
@@ -17,7 +17,7 @@ const userSchema = new Schema({
 });
 
 // Static method for user registration in the Grievance Forum
-userSchema.statics.signup = async function (email, password) {
+adminSchema.statics.signup = async function (email, password) {
 
     // Validation
     if (!email || !password) {
@@ -42,29 +42,29 @@ userSchema.statics.signup = async function (email, password) {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
-    const user = await this.create({ email, password: hash });
-    return user;
+    const admin = await this.create({ email, password: hash });
+    return admin;
 }
 
 // Static method for user login in the Grievance Forum
-userSchema.statics.login = async function (email, password) {
+adminSchema.statics.login = async function (email, password) {
     if (!email || !password) {
         throw Error("Both email and password are required for login.");
     }
 
-    const user = await this.findOne({ email });
+    const admin = await this.findOne({ email });
 
-    if (!user) {
+    if (!admin) {
         throw Error("Incorrect Email");
     }
 
-    const match = await bcrypt.compare(password, user.password);
+    const match = await bcrypt.compare(password, admin.password);
 
     if (!match) {
         throw Error('Incorrect Password');
     }
 
-    return user;
+    return admin;
 }
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('Admin', adminSchema);

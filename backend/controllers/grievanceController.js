@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 
 // GET all Grievances
 const getGrievances = async (req, res) => {
-    const user_id = req.user._id;
+    // const user_id = req.user._id;
     // { createdAt: -1 } => show the database in descending order, which means showing the latest grievances first
     const grievances = await Grievance.find({  }).sort({ createdAt: -1 });
     res.status(200).json(grievances);

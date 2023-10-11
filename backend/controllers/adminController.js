@@ -1,4 +1,4 @@
-const User = require('../models/userModel');
+const User = require('../models/adminModel');
 const jwt = require('jsonwebtoken');
 
 const createToken = (_id) => {
@@ -6,7 +6,7 @@ const createToken = (_id) => {
 }
 
 // Login user for the Grievance Forum
-const loginUser = async (req, res) => {
+const loginAdmin = async (req, res) => {
 
     const {email, password} = req.body;
 
@@ -23,7 +23,7 @@ const loginUser = async (req, res) => {
 }
 
 // Signup user for the Grievance Forum
-const signupUser = async (req, res) => {
+const signupAdmin = async (req, res) => {
     const {email, password} = req.body;
 
     try {
@@ -38,4 +38,4 @@ const signupUser = async (req, res) => {
     }
 }
 
-module.exports = { loginUser, signupUser };
+module.exports = { loginAdmin, signupAdmin };

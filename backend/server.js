@@ -9,7 +9,7 @@ const Mongoose = require('mongoose')
 
 //importing workouts
 const grievanceRoutes = require('./routes/grievances')
-const userRoutes = require('./routes/user')
+const adminRoutes = require('./routes/admin')
 
 //express app
 const app = express()
@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 
 //routes
 app.use('/api/grievances', grievanceRoutes)
-app.use('/api/user', userRoutes)
+app.use('/api/admin', adminRoutes)
 
 //Connect to DB
 Mongoose.connect(process.env.MONG_URI)
